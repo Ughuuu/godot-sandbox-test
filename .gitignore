@@ -1,3 +1,4 @@
+# Build directories
 build/
 .build/
 .build_android/
@@ -6,21 +7,81 @@ build/
 .godot/
 .mingw/
 .vscode/
+
+# Project specific
 program/test
 .sconsign.dblite
-.DS_Store
-*.o
-*.os
-*.elf
 bin/addons/godot_sandbox/bin/*
 bin/cmake/toolchain.cmake
 
-# Ignore all CPP files in the bintr directory
+# Generated source files
 src/bintr/*.cpp
 src/gen/
 
-# UID files
+# Object files and binaries
+*.o
+*.os
+*.elf
+*.so
+*.dll
+*.dylib
+*.a
+*.lib
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 *.uid
 
-# Build files
+# Build artifacts
 *.pyc
+*.pyo
+__pycache__/
+*.egg-info/
+
+# Logs and debug files
+*.log
+.gdb_history
+vgcore.*
+build_performance.log
+
+# Test artifacts
+test_results/
+coverage/
+*.gcov
+*.gcda
+*.gcno
+
+# Documentation build
+docs/_build/
+docs/html/
+docs/latex/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+.cmake/
+
+# SCons
+.sconsign.dblite
+config.log
+
+# Godot specific
+.import/
+export.cfg
+export_presets.cfg
