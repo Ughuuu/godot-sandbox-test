@@ -1,8 +1,8 @@
 #pragma once
+#include <algorithm>
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/core/binder_common.hpp>
 #include <libriscv/machine.hpp>
-#include <algorithm>
 #include <optional>
 
 using namespace godot;
@@ -36,16 +36,17 @@ protected:
 	String _to_string() const;
 
 public:
-	static constexpr unsigned MAX_INSTRUCTIONS = 8000; // Millions
-	static constexpr unsigned MAX_HEAP = 16ul; // MBs
-	static constexpr unsigned MAX_VMEM = 16ul; // MBs
-	static constexpr unsigned MAX_HEAP_ALLOCS = 4000; // Max guest heap allocations
-	static constexpr unsigned MAX_LEVEL = 4; // Maximum call recursion depth
-	static constexpr unsigned MAX_REFS = 100; // Default maximum number of references
-	static constexpr unsigned EDITOR_THROTTLE = 8; // Throttle VM calls from the editor
-	static constexpr unsigned MAX_PROPERTIES = 32; // Maximum number of sandboxed properties
-	static constexpr unsigned MAX_PUBLIC_FUNCTIONS = 128; // Maximum number of public functions
-	static constexpr gaddr_t SHM_BASE_ADDRESS = 0x400000000; // 16 GB
+	// Execution limits for sandbox safety and performance
+	static constexpr unsigned MAX_INSTRUCTIONS = 8000; // Millions of instructions per call
+	static constexpr unsigned MAX_HEAP = 16ul; // MBs - Maximum heap size for guest programs
+	static constexpr unsigned MAX_VMEM = 16ul; // MBs - Maximum virtual memory size
+	static constexpr unsigned MAX_HEAP_ALLOCS = 4000; // Max guest heap allocations to prevent memory exhaustion
+	static constexpr unsigned MAX_LEVEL = 4; // Maximum call recursion depth to prevent stack overflow
+	static constexpr unsigned MAX_REFS = 100; // Default maximum number of Godot object references
+	static constexpr unsigned EDITOR_THROTTLE = 8; // Throttle VM calls from the editor to maintain responsiveness
+	static constexpr unsigned MAX_PROPERTIES = 32; // Maximum number of sandboxed properties exposed to editor
+	static constexpr unsigned MAX_PUBLIC_FUNCTIONS = 128; // Maximum number of public functions callable from GDScript
+	static constexpr gaddr_t SHM_BASE_ADDRESS = 0x400000000; // 16 GB - Base address for shared memory mappings
 
 	struct CurrentState {
 		std::vector<Variant> variants;
@@ -59,7 +60,7 @@ public:
 		bool is_mutable_variant(const Variant &var) const;
 	};
 	struct LookupEntry {
-		String  name;
+		String name;
 		gaddr_t address;
 	};
 	struct SharedMemoryRange {
@@ -67,8 +68,8 @@ public:
 		gaddr_t size;
 		void *base_ptr;
 
-		SharedMemoryRange(gaddr_t p_start, gaddr_t p_size, void *p_base_ptr)
-			: start(p_start), size(p_size), base_ptr(p_base_ptr) {}
+		SharedMemoryRange(gaddr_t p_start, gaddr_t p_size, void *p_base_ptr) :
+				start(p_start), size(p_size), base_ptr(p_base_ptr) {}
 		bool contains(gaddr_t address) const {
 			return address >= start && address < start + size;
 		}
@@ -614,14 +615,14 @@ public:
 
 private:
 	static void generate_runtime_cpp_api(bool use_argument_names = false);
-	gaddr_t share_array_internal(void* data, size_t size, bool allow_write);
+	gaddr_t share_array_internal(void *data, size_t size, bool allow_write);
 	bool is_in_vmcall() const noexcept { return m_current_state != &m_states[0]; }
 	void constructor_initialize();
 	void full_reset();
 	void reset_machine();
 	void set_program_data_internal(Ref<ELFScript> program);
 	bool load(const PackedByteArray *vbuf, const std::vector<std::string> *argv = nullptr);
-	static PackedStringArray get_public_functions(const machine_t&);
+	static PackedStringArray get_public_functions(const machine_t &);
 	void read_program_properties(bool editor) const;
 	void handle_exception(gaddr_t);
 	void handle_timeout(gaddr_t);
@@ -684,7 +685,6 @@ private:
 
 	// Redirections
 	Callable m_redirect_stdout;
-
 
 	Ref<ELFScript> m_program_data;
 	PackedByteArray m_program_bytes;

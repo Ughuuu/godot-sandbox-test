@@ -2,9 +2,9 @@
 
 #include "guest_datatypes.h"
 #include "sandbox_project_settings.h"
-#include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/class_db_singleton.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 namespace riscv {
 extern std::unordered_map<std::string, std::function<uint64_t()>> allowed_globals;
@@ -544,8 +544,7 @@ void Sandbox::generate_runtime_cpp_api(bool use_argument_names) {
 			} else {
 				// When we have skipped classes, we can't emit them, so we'll just skip them.
 				total_skipped_classes += remaining_waiting_classes;
-				WARN_PRINT("Skipped classes left in class inheritance: "
-					+ itos(remaining_waiting_classes) + ", total skipped classes: " + itos(total_skipped_classes));
+				WARN_PRINT("Skipped classes left in class inheritance: " + itos(remaining_waiting_classes) + ", total skipped classes: " + itos(total_skipped_classes));
 			}
 			break;
 		}

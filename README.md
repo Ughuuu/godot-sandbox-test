@@ -147,17 +147,36 @@ git submodule update --init --recursive
 
 ## Contributing
 
-Requirements:
-- [SCons](https://www.scons.org)
-- [python3](https://www.python.org)
+We welcome contributions! To get started with development:
 
-If you want to contribute to this repo, here are steps on how to build locally:
+### Quick Setup
+```bash
+# Clone with submodules
+git clone --recursive https://github.com/libriscv/godot-sandbox.git
+cd godot-sandbox
 
-```sh
+# Automated setup (recommended for new contributors)
+./setup_dev.sh
+
+# Manual setup
 ./build.sh
 ```
 
-You can also use `scons` similar to how godot-cpp addons are built.
+### Development Workflow
+```bash
+./dev_build.sh      # Quick development build  
+./dev_test.sh       # Run tests
+./check_quality.sh  # Check code quality before submitting
+```
+
+### Requirements
+- **CMake** 3.16+ and **Ninja** build system
+- **C++ compiler** with C++20 support (GCC 11+ or Clang 12+)
+- **Python 3.7+** for build scripts
+- Optional: **SCons** for alternative build system
+- For tests: **RISC-V cross-compiler** (`gcc-riscv64-linux-gnu`)
+
+📖 **For detailed contribution guidelines, please see [CONTRIBUTING.md](CONTRIBUTING.md)**
 
 ## Contributors ✨
 

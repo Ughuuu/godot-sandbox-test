@@ -2,8 +2,8 @@
 
 #include "../cpp/script_cpp.h"
 #include "../rust/script_rust.h"
-#include "../scoped_tree_base.h"
 #include "../sandbox_project_settings.h"
+#include "../scoped_tree_base.h"
 #include "../zig/script_zig.h"
 #include "script_elf.h"
 #include "script_instance_helper.h" // register_types.h
@@ -177,7 +177,8 @@ retry_callp:
 
 	struct RecursiveTrap {
 		bool &recursive_trap;
-		RecursiveTrap(bool &trap) : recursive_trap(trap) {
+		RecursiveTrap(bool &trap) :
+				recursive_trap(trap) {
 			recursive_trap = true; // Set the trap
 		}
 		~RecursiveTrap() {
@@ -393,18 +394,11 @@ bool ELFScriptInstance::property_can_revert(const StringName &p_name) const {
 		return true;
 	}
 	const String name = p_name;
-	if (name == "references_max"
-		|| name == "memory_max"
-		|| name == "execution_timeout"
-		|| name == "allocations_max"
-		|| name == "unboxed_arguments"
-		|| name == "precise_simulation"
+	if (name == "references_max" || name == "memory_max" || name == "execution_timeout" || name == "allocations_max" || name == "unboxed_arguments" || name == "precise_simulation"
 #ifdef RISCV_LIBTCC
-		|| name == "binary_translation_nbit_as"
-		|| name == "binary_translation_register_caching"
+			|| name == "binary_translation_nbit_as" || name == "binary_translation_register_caching"
 #endif // RISCV_LIBTCC
-		|| name == "profiling"
-		|| name == "restrictions") {
+			|| name == "profiling" || name == "restrictions") {
 		// These are default properties that can be reverted
 		return true;
 	}

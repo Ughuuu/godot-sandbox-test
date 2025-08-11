@@ -5,19 +5,19 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
-#include <godot_cpp/godot.hpp>
 #include <godot_cpp/core/error_macros.hpp>
+#include <godot_cpp/godot.hpp>
 
+#include "cpp/resource_loader_cpp.h"
+#include "cpp/resource_saver_cpp.h"
+#include "cpp/script_cpp.h"
+#include "cpp/script_language_cpp.h"
 #include "elf/resource_loader_elf.h"
 #include "elf/resource_saver_elf.h"
 #include "elf/script_elf.h"
 #include "elf/script_language_elf.h"
 #include "sandbox.h"
 #include "sandbox_project_settings.h"
-#include "cpp/resource_loader_cpp.h"
-#include "cpp/resource_saver_cpp.h"
-#include "cpp/script_cpp.h"
-#include "cpp/script_language_cpp.h"
 #ifdef PLATFORM_HAS_EDITOR
 #include "rust/resource_loader_rust.h"
 #include "rust/resource_saver_rust.h"

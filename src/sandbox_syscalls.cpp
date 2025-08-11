@@ -14,9 +14,9 @@
 #include "syscalls_helpers.hpp"
 #include <libriscv/rv32i_instr.hpp>
 
-#define PENALIZE(x) \
+#define PENALIZE(x)             \
 	if (!emu.get_profiling()) { \
-		machine.penalize(x); \
+		machine.penalize(x);    \
 	}
 
 namespace riscv {
@@ -492,7 +492,7 @@ APICALL(api_vfetch) {
 						gaddr_t ptr;
 						gaddr_t size;
 					} *gstr = machine.memory.memarray<Buffer>(gdata, 1);
-					gstr->ptr  = machine.arena().malloc(u8str.length());
+					gstr->ptr = machine.arena().malloc(u8str.length());
 					gstr->size = u8str.length();
 					machine.memory.memcpy(gstr->ptr, u8str.ptr(), u8str.length());
 				} else if (method == 2) { // std::u32string
@@ -580,7 +580,7 @@ APICALL(api_vfetch) {
 					for (unsigned i = 0; i < arr.size(); i++) {
 						auto u8str = arr[i].utf8();
 						Buffer gb;
-						gb.ptr  = machine.arena().malloc(u8str.length());
+						gb.ptr = machine.arena().malloc(u8str.length());
 						gb.size = u8str.length();
 						machine.memory.memcpy(gb.ptr, u8str.ptr(), u8str.length());
 						gvec->push_back(machine, gb);
@@ -2033,28 +2033,22 @@ void Sandbox::initialize_syscalls() {
 	Sandbox::initialize_syscalls_3d();
 
 	using namespace riscv;
-	static const Instruction<RISCV_ARCH> validated_syscall_instruction {
-		[](CPU<RISCV_ARCH>& cpu, rv32i_instruction instr)
-		{
+	static const Instruction<RISCV_ARCH> validated_syscall_instruction{
+		[](CPU<RISCV_ARCH> &cpu, rv32i_instruction instr) {
 			Machine<RISCV_ARCH>::syscall_handlers[instr.Itype.imm](cpu.machine());
 		},
-		[](char* buffer, size_t len, const CPU<RISCV_ARCH>&, rv32i_instruction instr) -> int
-		{
+		[](char *buffer, size_t len, const CPU<RISCV_ARCH> &, rv32i_instruction instr) -> int {
 			return snprintf(buffer, len,
-				"DYNCALL: 4-byte idx=0x%X (inline, 0x%X)",
-				uint32_t(instr.Itype.imm),
-				instr.whole
-			);
-		}};
+					"DYNCALL: 4-byte idx=0x%X (inline, 0x%X)",
+					uint32_t(instr.Itype.imm),
+					instr.whole);
+		}
+	};
 	// Override the machines unimplemented instruction handling,
 	// in order to use the custom instruction instead.
-	CPU<RISCV_ARCH>::on_unimplemented_instruction
-		= [](rv32i_instruction instr) -> const Instruction<RISCV_ARCH>&
-	{
-		if (instr.opcode() == 0b1011011 && instr.Itype.rs1 == 0 && instr.Itype.rd == 0)
-		{
-			if (instr.Itype.imm < Machine<RISCV_ARCH>::syscall_handlers.size())
-			{
+	CPU<RISCV_ARCH>::on_unimplemented_instruction = [](rv32i_instruction instr) -> const Instruction<RISCV_ARCH> & {
+		if (instr.opcode() == 0b1011011 && instr.Itype.rs1 == 0 && instr.Itype.rd == 0) {
+			if (instr.Itype.imm < Machine<RISCV_ARCH>::syscall_handlers.size()) {
 				return validated_syscall_instruction;
 			}
 		}

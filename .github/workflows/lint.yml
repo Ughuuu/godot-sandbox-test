@@ -1,20 +1,40 @@
-name: Lint
+name: Code Quality Checks
+
 on:
   workflow_dispatch:
   workflow_call:
+  pull_request:
+    paths:
+      - '**.cpp'
+      - '**.h'
+      - '**.hpp'
+      - '.clang-format'
 
 jobs:
-  build:
+  lint:
+    name: Code Formatting
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+        with:
+          submodules: false # Don't need submodules for formatting check
+          
       - name: Setup clang-format
-        shell: bash
         run: |
           sudo apt update && sudo apt install -y clang-format
-      - name: Run clang-format
-        shell: bash
+          
+      - name: Run clang-format check
         run: |
-          #./scripts/clang-format.sh
+          ./scripts/clang-format.sh
+          
+      - name: Check for changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "❌ Code formatting issues found. Please run clang-format on your changes."
+            git diff
+            exit 1
+          else
+            echo "✅ Code formatting is correct."
+          fi
