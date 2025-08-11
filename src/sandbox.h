@@ -36,16 +36,17 @@ protected:
 	String _to_string() const;
 
 public:
-	static constexpr unsigned MAX_INSTRUCTIONS = 8000; // Millions
-	static constexpr unsigned MAX_HEAP = 16ul; // MBs
-	static constexpr unsigned MAX_VMEM = 16ul; // MBs
-	static constexpr unsigned MAX_HEAP_ALLOCS = 4000; // Max guest heap allocations
-	static constexpr unsigned MAX_LEVEL = 4; // Maximum call recursion depth
-	static constexpr unsigned MAX_REFS = 100; // Default maximum number of references
-	static constexpr unsigned EDITOR_THROTTLE = 8; // Throttle VM calls from the editor
-	static constexpr unsigned MAX_PROPERTIES = 32; // Maximum number of sandboxed properties
-	static constexpr unsigned MAX_PUBLIC_FUNCTIONS = 128; // Maximum number of public functions
-	static constexpr gaddr_t SHM_BASE_ADDRESS = 0x400000000; // 16 GB
+	// Execution limits for sandbox safety and performance
+	static constexpr unsigned MAX_INSTRUCTIONS = 8000; // Millions of instructions per call
+	static constexpr unsigned MAX_HEAP = 16ul; // MBs - Maximum heap size for guest programs
+	static constexpr unsigned MAX_VMEM = 16ul; // MBs - Maximum virtual memory size
+	static constexpr unsigned MAX_HEAP_ALLOCS = 4000; // Max guest heap allocations to prevent memory exhaustion
+	static constexpr unsigned MAX_LEVEL = 4; // Maximum call recursion depth to prevent stack overflow
+	static constexpr unsigned MAX_REFS = 100; // Default maximum number of Godot object references
+	static constexpr unsigned EDITOR_THROTTLE = 8; // Throttle VM calls from the editor to maintain responsiveness
+	static constexpr unsigned MAX_PROPERTIES = 32; // Maximum number of sandboxed properties exposed to editor
+	static constexpr unsigned MAX_PUBLIC_FUNCTIONS = 128; // Maximum number of public functions callable from GDScript
+	static constexpr gaddr_t SHM_BASE_ADDRESS = 0x400000000; // 16 GB - Base address for shared memory mappings
 
 	struct CurrentState {
 		std::vector<Variant> variants;
