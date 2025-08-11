@@ -330,10 +330,12 @@ Sandbox::Sandbox() {
 	// class is well-formed at all times.
 	this->reset_machine();
 }
-Sandbox::Sandbox(const PackedByteArray &buffer) : Sandbox() {
+Sandbox::Sandbox(const PackedByteArray &buffer) :
+		Sandbox() {
 	this->load_buffer(buffer);
 }
-Sandbox::Sandbox(Ref<ELFScript> program) : Sandbox() {
+Sandbox::Sandbox(Ref<ELFScript> program) :
+		Sandbox() {
 	this->set_program(program);
 }
 
@@ -498,27 +500,27 @@ bool Sandbox::load(const PackedByteArray *buffer, const std::vector<std::string>
 
 		auto options = std::make_shared<riscv::MachineOptions<RISCV_ARCH>>(riscv::MachineOptions<RISCV_ARCH>{
 				.memory_max = uint64_t(get_memory_max()) << 20, // in MiB
-				//.verbose_loader = true,
+		//.verbose_loader = true,
 #ifdef RISCV_BINARY_TRANSLATION
 				.translate_enabled = riscv::libtcc_enabled && m_bintr_jit,
 				.translate_enable_embedded = true,
 				.translate_future_segments = false,
 				.translate_invoke_compiler = riscv::libtcc_enabled && m_bintr_jit,
-				//.translate_trace = true,
-				//.translate_timing = true,
-#  ifdef RISCV_LIBTCC
+		//.translate_trace = true,
+		//.translate_timing = true,
+#ifdef RISCV_LIBTCC
 				.translate_ignore_instruction_limit = get_instructions_max() <= 0,
 				.translate_use_register_caching = this->m_bintr_register_caching,
 				.translate_automatic_nbit_address_space = this->m_bintr_automatic_nbit_as,
 				.translate_live_patching = false, // Don't meddle with instruction stream
-#  endif // RISCV_LIBTCC
+#endif // RISCV_LIBTCC
 #endif
 		});
 #if defined(RISCV_BINARY_TRANSLATION) && defined(RISCV_LIBTCC)
 		// Background compilation, if enabled, will run the compilation in a separate thread
 		// and live-patch the results into the decoder cache after the compilation is done.
 		if (this->m_bintr_bg_compilation) {
-			options->translate_background_callback = [](std::function<void()>& callback) {
+			options->translate_background_callback = [](std::function<void()> &callback) {
 				// This is called from inside the binary translator in the main thread,
 				// and the goal is to run the callback in a separate thread, to avoid
 				// blocking the main thread while the compilation step is running.
@@ -589,7 +591,7 @@ bool Sandbox::load(const PackedByteArray *buffer, const std::vector<std::string>
 				m.cpu.simulate_precise();
 				if (m.instruction_limit_reached()) {
 					throw riscv::MachineTimeoutException(riscv::MAX_INSTRUCTIONS_REACHED,
-						"Instruction count limit reached", max_instr);
+							"Instruction count limit reached", max_instr);
 				}
 			}
 		}
@@ -900,8 +902,8 @@ Variant Sandbox::vmcall_internal(gaddr_t address, const Variant **args, int argc
 	const auto *endptr = this->m_states.data() + this->m_states.size();
 	if (UNLIKELY(this->m_current_state >= endptr)) {
 		ERR_PRINT("Too many VM calls in progress");
-		this->m_exceptions ++;
-		this->m_global_exceptions ++;
+		this->m_exceptions++;
+		this->m_global_exceptions++;
 		this->m_current_state -= 1;
 		return Variant();
 	}
@@ -934,7 +936,7 @@ Variant Sandbox::vmcall_internal(gaddr_t address, const Variant **args, int argc
 				m_machine->cpu.simulate_precise();
 				if (m_machine->instruction_limit_reached()) {
 					throw riscv::MachineTimeoutException(riscv::MAX_INSTRUCTIONS_REACHED,
-						"Instruction count limit reached", max_instr);
+							"Instruction count limit reached", max_instr);
 				}
 			} else if (UNLIKELY(this->get_profiling())) {
 				LocalProfilingData &profdata = *this->m_local_profiling_data;
@@ -974,7 +976,7 @@ Variant Sandbox::vmcall_internal(gaddr_t address, const Variant **args, int argc
 						// Update the global visited map
 						std::unordered_map<gaddr_t, int> &hotspots = gprofstate.hotspots;
 						for (const gaddr_t address : profdata.visited) {
-							hotspots[address] ++;
+							hotspots[address]++;
 						}
 					}
 					profdata.visited.clear();
@@ -1107,7 +1109,7 @@ bool Sandbox::has_function(const StringName &p_function) const {
 }
 
 void Sandbox::add_cached_address(const String &name, gaddr_t address) const {
-	m_lookup.insert_or_assign(name.hash(), LookupEntry{name, address});
+	m_lookup.insert_or_assign(name.hash(), LookupEntry{ name, address });
 }
 
 //-- Scoped objects and variants --//

@@ -14,10 +14,9 @@ static uint64_t sys_fast_get_node(uint64_t parent, const char *path, size_t path
 	register int syscall_number asm("a7") = ECALL_GET_NODE;
 
 	asm volatile(
-		"ecall"
-		: "+r"(addr)
-		: "r"(path_ptr), "m"(*path_ptr), "r"(path_size), "r"(syscall_number)
-	);
+			"ecall"
+			: "+r"(addr)
+			: "r"(path_ptr), "m"(*path_ptr), "r"(path_size), "r"(syscall_number));
 
 	return addr;
 }

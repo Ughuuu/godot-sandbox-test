@@ -195,13 +195,13 @@ PUBLIC Variant test_array(Array array) {
 PUBLIC Variant test_array_assign(Array arr) {
 	arr[0] = 42;
 	arr[1] = "Hello";
-	arr[2] = PackedArray<double> ({ 3.14, 2.71 });
+	arr[2] = PackedArray<double>({ 3.14, 2.71 });
 	if (arr[0] != 42 || arr[1] != "Hello" || arr[2].get().get_type() != Variant::Type::PACKED_FLOAT64_ARRAY) {
 		return "Fail";
 	}
 
 	Array arr2 = Array::Create();
-	arr2.push_back(PackedArray<double> ({ 1.0, 2.0, 3.0 }));
+	arr2.push_back(PackedArray<double>({ 1.0, 2.0, 3.0 }));
 	arr.push_back(arr2);
 	arr[3] = arr2;
 
@@ -218,7 +218,6 @@ PUBLIC Variant test_array_assign(Array arr) {
 }
 
 PUBLIC Variant test_array_assign2(Array arr, const size_t idx) {
-
 	std::vector<size_t> indices = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 
 	arr.resize(indices.size());
@@ -283,41 +282,41 @@ PUBLIC Variant test_create_callable() {
 // clang-format on
 
 PUBLIC Variant test_pa_u8(PackedByteArray arr) {
-	return PackedByteArray (arr.fetch());
+	return PackedByteArray(arr.fetch());
 }
 PUBLIC Variant test_pa_f32(PackedArray<float> arr) {
-	return PackedArray<float> (arr.fetch());
+	return PackedArray<float>(arr.fetch());
 }
 PUBLIC Variant test_pa_f64(PackedArray<double> arr) {
-	return PackedArray<double> (arr.fetch());
+	return PackedArray<double>(arr.fetch());
 }
 PUBLIC Variant test_pa_i32(PackedArray<int32_t> arr) {
-	return PackedArray<int32_t> (arr.fetch());
+	return PackedArray<int32_t>(arr.fetch());
 }
 PUBLIC Variant test_pa_i64(PackedArray<int64_t> arr) {
-	return PackedArray<int64_t> (arr.fetch());
+	return PackedArray<int64_t>(arr.fetch());
 }
 PUBLIC Variant test_pa_vec2(PackedArray<Vector2> arr) {
-	return PackedArray<Vector2> (arr.fetch());
+	return PackedArray<Vector2>(arr.fetch());
 }
 PUBLIC Variant test_pa_vec3(PackedArray<Vector3> arr) {
-	return PackedArray<Vector3> (arr.fetch());
+	return PackedArray<Vector3>(arr.fetch());
 }
 PUBLIC Variant test_pa_vec4(PackedArray<Vector4> arr) {
-	return PackedArray<Vector4> (arr.fetch());
+	return PackedArray<Vector4>(arr.fetch());
 }
 PUBLIC Variant test_pa_color(PackedArray<Color> arr) {
-	return PackedArray<Color> (arr.fetch());
+	return PackedArray<Color>(arr.fetch());
 }
 PUBLIC Variant test_pa_string(PackedArray<std::string> arr) {
-	return PackedArray<std::string> (arr.fetch());
+	return PackedArray<std::string>(arr.fetch());
 }
 
 PUBLIC Variant test_create_pa_u8() {
 	PackedByteArray arr({ 1, 2, 3, 4 });
 	return arr;
 }
-static const uint8_t pa_u8_data[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+static const uint8_t pa_u8_data[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 PUBLIC Variant test_create_pa_u8_ptr() {
 	return PackedByteArray(pa_u8_data, sizeof(pa_u8_data) / sizeof(uint8_t));
 }

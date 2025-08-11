@@ -38,10 +38,9 @@ Variant Object::get(std::string_view name) const {
 	register int syscall_number asm("a7") = ECALL_OBJ_PROP_GET;
 
 	asm volatile(
-		"ecall"
-		: "=m"(*var_ptr)
-		: "r"(object), "r"(property), "m"(*property), "r"(property_size), "r"(var_ptr), "r"(syscall_number)
-	);
+			"ecall"
+			: "=m"(*var_ptr)
+			: "r"(object), "r"(property), "m"(*property), "r"(property_size), "r"(var_ptr), "r"(syscall_number));
 #endif
 	return var;
 }
@@ -57,10 +56,9 @@ void Object::set(std::string_view name, const Variant &value) {
 	register int syscall_number asm("a7") = ECALL_OBJ_PROP_SET;
 
 	asm volatile(
-		"ecall"
-		:
-		: "r"(object), "r"(property), "m"(*property), "r"(property_size), "r"(value_ptr), "m"(*value_ptr), "r"(syscall_number)
-	);
+			"ecall"
+			:
+			: "r"(object), "r"(property), "m"(*property), "r"(property_size), "r"(value_ptr), "m"(*value_ptr), "r"(syscall_number));
 #endif
 }
 

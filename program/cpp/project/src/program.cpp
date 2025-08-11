@@ -11,8 +11,7 @@ static Variant print_string(String str) {
 	return Nil;
 }
 
-static long fib(long n, long acc, long prev)
-{
+static long fib(long n, long acc, long prev) {
 	if (n == 0)
 		return acc;
 	else
@@ -29,8 +28,8 @@ int main() {
 	// The entire Godot API is available
 	Sandbox sandbox = get_node<Sandbox>();
 	print(sandbox.is_binary_translated()
-		? "The current program is accelerated by binary translation."
-		: "The current program is running in interpreter mode.");
+					? "The current program is accelerated by binary translation."
+					: "The current program is running in interpreter mode.");
 
 	// Add public API
 	ADD_API_FUNCTION(last_printed_string, "String", "", "Returns the last printed string");
@@ -39,9 +38,7 @@ int main() {
 
 	// Add a sandboxed property
 	static int meaning_of_life = 42;
-	add_property("meaning_of_life", Variant::Type::INT, 42,
-		[]() -> Variant { return meaning_of_life; },
-		[](Variant value) -> Variant { meaning_of_life = value; print("Set to: ", meaning_of_life); return Nil; });
+	add_property("meaning_of_life", Variant::Type::INT, 42, []() -> Variant { return meaning_of_life; }, [](Variant value) -> Variant { meaning_of_life = value; print("Set to: ", meaning_of_life); return Nil; });
 
 	halt();
 }

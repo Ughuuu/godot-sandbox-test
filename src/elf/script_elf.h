@@ -8,7 +8,7 @@ using namespace godot;
 class ELFScriptInstance;
 class Sandbox;
 namespace godot {
-	class ScriptInstanceExtension;
+class ScriptInstanceExtension;
 }
 
 class ELFScript : public ScriptExtension {

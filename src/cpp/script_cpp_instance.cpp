@@ -1,17 +1,16 @@
 #include "script_cpp_instance.h"
 
-#include "script_cpp.h"
-#include "script_language_cpp.h"
 #include "../elf/script_elf.h"
 #include "../elf/script_instance.h"
 #include "../elf/script_instance_helper.h" // register_types.h
 #include "../scoped_tree_base.h"
+#include "script_cpp.h"
+#include "script_language_cpp.h"
 #include <godot_cpp/core/object.hpp>
 #include <godot_cpp/templates/local_vector.hpp>
 static constexpr bool VERBOSE_LOGGING = false;
 
-void CPPScriptInstance::set_script_instance(ELFScriptInstance *p_instance)
-{
+void CPPScriptInstance::set_script_instance(ELFScriptInstance *p_instance) {
 	this->elf_script_instance = p_instance;
 	if (p_instance) {
 		// XXX: If elf_script is already set, and is different, that is a problem.
@@ -24,12 +23,11 @@ void CPPScriptInstance::set_script_instance(ELFScriptInstance *p_instance)
 		this->script->elf_script = p_instance->script;
 	}
 }
-void CPPScriptInstance::unset_script_instance()
-{
+void CPPScriptInstance::unset_script_instance() {
 	if (this->elf_script_instance) {
 		if constexpr (VERBOSE_LOGGING) {
 			ERR_PRINT("CPPScriptInstance::unset_script_instance: " +
-				Object::cast_to<Node>(this->elf_script_instance->get_owner())->get_path());
+					Object::cast_to<Node>(this->elf_script_instance->get_owner())->get_path());
 		}
 		this->elf_script_instance = nullptr;
 	}
@@ -41,8 +39,7 @@ void CPPScriptInstance::unset_script_instance()
 		this->managed_esi = nullptr;
 	}
 }
-void CPPScriptInstance::manage_script_instance(ELFScript *p_script)
-{
+void CPPScriptInstance::manage_script_instance(ELFScript *p_script) {
 	if (this->managed_esi != nullptr) {
 		// If we already have a managed ESI, we need to free it.
 		memdelete(this->managed_esi);
@@ -57,7 +54,7 @@ void CPPScriptInstance::manage_script_instance(ELFScript *p_script)
 	this->set_script_instance(this->managed_esi);
 	if constexpr (VERBOSE_LOGGING) {
 		ERR_PRINT("CPPScriptInstance::manage_script_instance: managed_esi set to " +
-			Object::cast_to<Node>(this->managed_esi->get_owner())->get_path());
+				Object::cast_to<Node>(this->managed_esi->get_owner())->get_path());
 	}
 }
 
@@ -92,7 +89,7 @@ bool CPPScriptInstance::set(const StringName &p_name, const Variant &p_value) {
 		this->set_script_instance(new_elf_script->get_script_instance(object));
 		if constexpr (VERBOSE_LOGGING) {
 			ERR_PRINT("CPPScriptInstance::set: associated_script to " +
-				new_elf_script->get_path());
+					new_elf_script->get_path());
 		}
 		return true;
 	}
@@ -118,12 +115,11 @@ bool CPPScriptInstance::get(const StringName &p_name, Variant &r_ret) const {
 			}
 			r_ret = this->managed_esi->script;
 			return true;
-		}
-		else if (elf_script_instance) {
+		} else if (elf_script_instance) {
 			r_ret = elf_script_instance->get_owner();
 			if constexpr (VERBOSE_LOGGING) {
 				ERR_PRINT("CPPScriptInstance::get: associated_script is " +
-					Object::cast_to<Node>(elf_script_instance->get_owner())->get_path());
+						Object::cast_to<Node>(elf_script_instance->get_owner())->get_path());
 			}
 			return true;
 		}
@@ -131,8 +127,7 @@ bool CPPScriptInstance::get(const StringName &p_name, Variant &r_ret) const {
 			ERR_PRINT("CPPScriptInstance::get: associated_script is not set");
 		}
 		return false;
-	}
-	else if (p_name == s_script) {
+	} else if (p_name == s_script) {
 		r_ret = script;
 		return true;
 	}
@@ -156,13 +151,11 @@ void CPPScriptInstance::notification(int32_t p_what, bool p_reversed) {
 Variant CPPScriptInstance::callp(
 		const StringName &p_method,
 		const Variant **p_args, const int p_argument_count,
-		GDExtensionCallError &r_error)
-{
+		GDExtensionCallError &r_error) {
 	if constexpr (VERBOSE_LOGGING) {
 		ERR_PRINT("CPPScriptInstance::callp " + p_method);
 	}
-	if (p_method == StringName("set_associated_script"))
-	{
+	if (p_method == StringName("set_associated_script")) {
 		if (p_argument_count != 1) {
 			if constexpr (VERBOSE_LOGGING) {
 				ERR_PRINT("CPPScriptInstance::callp: set_associated_script requires exactly one argument");
@@ -199,12 +192,10 @@ Variant CPPScriptInstance::callp(
 		r_error.error = GDEXTENSION_CALL_OK;
 		if constexpr (VERBOSE_LOGGING) {
 			ERR_PRINT("CPPScriptInstance::callp: set_associated_script to " +
-				Object::cast_to<Node>(elf_script_instance->get_owner())->get_path());
+					Object::cast_to<Node>(elf_script_instance->get_owner())->get_path());
 		}
 		return Variant();
-	}
-	else if (p_method == StringName("get_associated_script"))
-	{
+	} else if (p_method == StringName("get_associated_script")) {
 		// This is a property getter to get the associated script
 		if (this->managed_esi != nullptr) {
 			// If we have a managed script instance, we can return it.
@@ -213,12 +204,11 @@ Variant CPPScriptInstance::callp(
 				ERR_PRINT("CPPScriptInstance::callp: get_associated_script is managed");
 			}
 			return this->managed_esi->script;
-		}
-		else if (elf_script_instance) {
+		} else if (elf_script_instance) {
 			r_error.error = GDEXTENSION_CALL_OK;
 			if constexpr (VERBOSE_LOGGING) {
 				ERR_PRINT("CPPScriptInstance::callp: get_associated_script is set to " +
-					Object::cast_to<Node>(elf_script_instance->get_owner())->get_path());
+						Object::cast_to<Node>(elf_script_instance->get_owner())->get_path());
 			}
 			return elf_script_instance->get_owner();
 		}
@@ -227,9 +217,7 @@ Variant CPPScriptInstance::callp(
 		}
 		r_error.error = GDEXTENSION_CALL_OK;
 		return Variant();
-	}
-	else if (elf_script_instance)
-	{
+	} else if (elf_script_instance) {
 		Ref<ELFScript> &elf_script = elf_script_instance->script;
 		if (!elf_script.is_valid()) {
 			if constexpr (VERBOSE_LOGGING) {
@@ -282,8 +270,7 @@ static void set_property_info(
 		GDExtensionVariantType p_type,
 		uint32_t p_hint,
 		const String &p_hint_string,
-		uint32_t p_usage)
-{
+		uint32_t p_usage) {
 	p_info.name = stringname_alloc(p_name);
 	p_info.class_name = stringname_alloc(p_class_name);
 	p_info.type = p_type;
@@ -298,13 +285,12 @@ const GDExtensionPropertyInfo *CPPScriptInstance::get_property_list(uint32_t *r_
 		GDExtensionPropertyInfo *pinfo = (GDExtensionPropertyInfo *)cpi;
 		// Add a property for 'associated_script'
 		set_property_info(pinfo[*r_count],
-			StringName("associated_script"),
-			StringName(""),
-			GDEXTENSION_VARIANT_TYPE_OBJECT,
-			PROPERTY_HINT_RESOURCE_TYPE,
-			"ELFScript",
-			PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NODE_PATH_FROM_SCENE_ROOT
-		);
+				StringName("associated_script"),
+				StringName(""),
+				GDEXTENSION_VARIANT_TYPE_OBJECT,
+				PROPERTY_HINT_RESOURCE_TYPE,
+				"ELFScript",
+				PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NODE_PATH_FROM_SCENE_ROOT);
 		*r_count += 1;
 		return cpi;
 	}
@@ -312,13 +298,12 @@ const GDExtensionPropertyInfo *CPPScriptInstance::get_property_list(uint32_t *r_
 	*r_count = 1;
 	GDExtensionPropertyInfo *pinfo = memnew_arr(GDExtensionPropertyInfo, *r_count);
 	set_property_info(pinfo[0],
-		StringName("associated_script"),
-		StringName(""),
-		GDEXTENSION_VARIANT_TYPE_OBJECT,
-		PROPERTY_HINT_RESOURCE_TYPE,
-		"ELFScript",
-		PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NODE_PATH_FROM_SCENE_ROOT
-	);
+			StringName("associated_script"),
+			StringName(""),
+			GDEXTENSION_VARIANT_TYPE_OBJECT,
+			PROPERTY_HINT_RESOURCE_TYPE,
+			"ELFScript",
+			PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NODE_PATH_FROM_SCENE_ROOT);
 	if constexpr (VERBOSE_LOGGING) {
 		ERR_PRINT("CPPScriptInstance::get_property_list: returning associated_script property");
 	}
@@ -450,8 +435,7 @@ ScriptLanguage *CPPScriptInstance::_get_language() {
 }
 
 CPPScriptInstance::CPPScriptInstance(Object *p_owner, const Ref<CPPScript> p_script) :
-		owner(p_owner), script(p_script)
-{
+		owner(p_owner), script(p_script) {
 	if (script->elf_script == nullptr) {
 		script->detect_script_instance();
 	}
@@ -467,7 +451,7 @@ CPPScriptInstance::CPPScriptInstance(Object *p_owner, const Ref<CPPScript> p_scr
 		if constexpr (VERBOSE_LOGGING) {
 			bool r_valid;
 			ERR_PRINT("CPPScriptInstance: managed_esi set to " +
-				this->managed_esi->to_string(&r_valid));
+					this->managed_esi->to_string(&r_valid));
 		}
 		this->set_script_instance(this->managed_esi);
 	} else {
